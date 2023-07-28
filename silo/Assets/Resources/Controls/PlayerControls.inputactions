@@ -3,12 +3,12 @@
     "maps": [
         {
             "name": "Playing",
-            "id": "4ff557a1-6995-4be3-80fa-a5cc04493662",
+            "id": "134aeb24-a970-45f1-97fa-44d77889ad68",
             "actions": [
                 {
                     "name": "Move",
                     "type": "Value",
-                    "id": "5d85639e-b074-496b-8978-5d402dc0fd1f",
+                    "id": "9468317e-153f-4693-a18a-280f4037d11c",
                     "expectedControlType": "Vector2",
                     "processors": "",
                     "interactions": "",
@@ -17,7 +17,7 @@
                 {
                     "name": "Dash",
                     "type": "Button",
-                    "id": "fa12d3e9-e9af-4420-9c23-bd6e13ca1cb1",
+                    "id": "b8dacad0-706a-4d36-9552-ddeefa7b0536",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
@@ -27,7 +27,7 @@
             "bindings": [
                 {
                     "name": "2D Vector",
-                    "id": "9d53219b-1c7d-4c83-a780-f4a771d99def",
+                    "id": "854279cc-db70-4229-b2c9-8ba3043494d9",
                     "path": "2DVector",
                     "interactions": "",
                     "processors": "",
@@ -38,7 +38,7 @@
                 },
                 {
                     "name": "up",
-                    "id": "179a877d-053c-479c-a0a5-0f20b2b95338",
+                    "id": "33b461d2-77e2-4b16-87ee-4232cd6dd6bb",
                     "path": "<Keyboard>/w",
                     "interactions": "",
                     "processors": "",
@@ -49,7 +49,7 @@
                 },
                 {
                     "name": "down",
-                    "id": "b4db2da9-1cae-4b26-b668-ae9aec454dc3",
+                    "id": "d5d38af5-56ac-4ee3-b803-5fbc7ef9bef8",
                     "path": "<Keyboard>/s",
                     "interactions": "",
                     "processors": "",
@@ -60,7 +60,7 @@
                 },
                 {
                     "name": "left",
-                    "id": "f9c120c7-4593-481e-a8e1-51c118e422f8",
+                    "id": "8fd2c7bf-f07e-4b24-88f1-7fca6a5f2fbb",
                     "path": "<Keyboard>/a",
                     "interactions": "",
                     "processors": "",
@@ -71,7 +71,7 @@
                 },
                 {
                     "name": "right",
-                    "id": "d2e74f09-6e45-488b-ae8e-c23caee6b40e",
+                    "id": "5e18ba7c-f6a5-4eca-8369-dea020ff7606",
                     "path": "<Keyboard>/d",
                     "interactions": "",
                     "processors": "",
@@ -82,7 +82,7 @@
                 },
                 {
                     "name": "",
-                    "id": "2e7584e9-552c-418a-924c-6252ecc660e9",
+                    "id": "c698e603-299a-4175-83a9-442682dd2e16",
                     "path": "<Keyboard>/leftShift",
                     "interactions": "",
                     "processors": "",
@@ -94,11 +94,5 @@
             ]
         }
     ],
-    "controlSchemes": [
-        {
-            "name": "Keyboard",
-            "bindingGroup": "Keyboard",
-            "devices": []
-        }
-    ]
+    "controlSchemes": []
 }

@@ -11,22 +11,27 @@ public class PlayerUnit : BaseUnit
     private InputAction _moveAction;
     private InputAction _dashAction;
 
+    private Vector2 _moveDirection;
+
     public PlayerUnit(UnitType unitType, Stats stats) : base(unitType, stats)
     {
-        SetUnitType(UnitType.Player);
-        Stats.Health = 100;
-        Stats.Speed = 5f;
+        
     }
 
     private void OnEnable()
     {
+        SetUnitType(UnitType.Player);
+        Stats.Health = 100;
+        Stats.Speed = 5f;
         _playerInput = GetComponent<PlayerInput>();
+
         _moveAction = _playerInput.actions["Move"];
         _dashAction = _playerInput.actions["Dash"];
-        _playerInput.enabled = true;
+        //_playerInput.enabled = true;
 
         _moveAction.performed += ctx => GetMoveInput(ctx);
-        _dashAction.performed += _ => Dash();
+        _moveAction.canceled += ctx => ClearInput(ctx);
+        _dashAction.performed += ctx => Dash(ctx);
     }
 
     // Start is called before the first frame update
@@ -44,23 +49,25 @@ public class PlayerUnit : BaseUnit
     void FixedUpdate()
     {
         Move();
-        Debug.Log(_moveAction.ReadValue<Vector2>());
-        Debug.Log(_dashAction.ReadValue<float>());
     }
 
     public override void Move()
     {
-        //Vector2 moveDirection = GetMoveInput();
-        //transform.Translate(moveDirection * (Time.deltaTime * Stats.Speed));
+        Stats.Speed = 10f;
+        transform.Translate(new Vector3(_moveDirection.x, _moveDirection.y, 0) * (Stats.Speed * Time.deltaTime));
     }
 
-    private Vector2 GetMoveInput(InputAction.CallbackContext context)
+    private void GetMoveInput(InputAction.CallbackContext context)
     {
-        Debug.Log(context.ReadValue<Vector2>());
-        return _moveAction.ReadValue<Vector2>();
+        _moveDirection = context.ReadValue<Vector2>();
     }
     
-    private void Dash()
+    private void ClearInput(InputAction.CallbackContext context)
+    {
+        _moveDirection = Vector2.zero;
+    }
+    
+    public void Dash(InputAction.CallbackContext context)
     {
         Debug.Log("Dash");
     }

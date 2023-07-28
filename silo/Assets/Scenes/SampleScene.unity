@@ -387,10 +387,14 @@ MonoBehaviour:
   m_ActionEvents:
   - m_PersistentCalls:
       m_Calls: []
-    m_ActionId: 5d85639e-b074-496b-8978-5d402dc0fd1f
+    m_ActionId: 9468317e-153f-4693-a18a-280f4037d11c
     m_ActionName: 'Playing/Move[/Keyboard/w,/Keyboard/s,/Keyboard/a,/Keyboard/d]'
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: b8dacad0-706a-4d36-9552-ddeefa7b0536
+    m_ActionName: 'Playing/Dash[/Keyboard/leftShift]'
   m_NeverAutoSwitchControlSchemes: 0
-  m_DefaultControlScheme: Keyboard
+  m_DefaultControlScheme: 
   m_DefaultActionMap: Playing
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
