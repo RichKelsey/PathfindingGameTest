@@ -23,6 +23,7 @@ public class PlayerUnit : BaseUnit
         _playerInput = GetComponent<PlayerInput>();
         _moveAction = _playerInput.actions["Move"];
         _dashAction = _playerInput.actions["Dash"];
+        _playerInput.enabled = true;
 
         _moveAction.performed += ctx => GetMoveInput(ctx);
         _dashAction.performed += _ => Dash();
@@ -44,8 +45,7 @@ public class PlayerUnit : BaseUnit
     {
         Move();
         Debug.Log(_moveAction.ReadValue<Vector2>());
-        
-        Debug.Log(Keyboard.current.wKey.isPressed.ToString());
+        Debug.Log(_dashAction.ReadValue<float>());
     }
 
     public override void Move()
