@@ -8,6 +8,8 @@ public class PlayerUnit : BaseUnit
 {
     private PlayerInput _playerInput;
     
+    private CircleCollider2D _playerCollider;
+    
     private InputAction _moveAction;
     private InputAction _dashAction;
 
@@ -26,6 +28,7 @@ public class PlayerUnit : BaseUnit
         SetUnitType(UnitType.Player);
         SetStats(100, 5f, 0, 75, 70, 15, 3f);
         _playerInput = GetComponent<PlayerInput>();
+        _playerCollider = GetComponent<CircleCollider2D>();
 
         _moveAction = _playerInput.actions["Move"];
         _dashAction = _playerInput.actions["Dash"];
@@ -51,6 +54,7 @@ public class PlayerUnit : BaseUnit
     void FixedUpdate()
     {
         Move();
+        HandleCollision();
     }
 
     public override void Move()
@@ -89,10 +93,23 @@ public class PlayerUnit : BaseUnit
     
     private IEnumerator DashCooldown()
     {
-        _dashOnCooldown = true;
-        Debug.Log("Dash on cooldown");
         yield return new WaitForSeconds(Stats.DashCooldown);
         _dashOnCooldown = false;
-        Debug.Log("Dash off cooldown");
+    }
+    
+    private void HandleCollision()
+    {
+        Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, _playerCollider.radius);
+        foreach(Collider2D hit in hits)
+        {
+            if (hit == _playerCollider)
+                continue;
+            
+            ColliderDistance2D colliderDistance = hit.Distance(_playerCollider);
+            if (colliderDistance.isOverlapped)
+            {
+                transform.Translate(colliderDistance.pointA - colliderDistance.pointB);
+            }
+        }
     }
 }
