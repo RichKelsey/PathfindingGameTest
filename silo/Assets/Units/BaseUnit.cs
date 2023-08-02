@@ -14,7 +14,7 @@ public abstract class BaseUnit : MonoBehaviour
         this.Stats = stats;
     }
 
-    protected void SetStats(int health, float speed, int attackModifier, int walkAcceleration, int walkDeceleration, int dashPower, float dashCooldown)
+    protected void SetStats(int health, float speed, int attackModifier, int walkAcceleration, int walkDeceleration, int dashPower, float dashCooldown, float attackCooldown)
     {
         Stats.Health = health;
         Stats.Speed = speed;
@@ -23,6 +23,7 @@ public abstract class BaseUnit : MonoBehaviour
         Stats.WalkDeceleration = walkDeceleration;
         Stats.DashPower = dashPower;
         Stats.DashCooldown = dashCooldown;
+        Stats.AttackCooldown = attackCooldown;
     }
     
     public void TakeDamage(int damage)

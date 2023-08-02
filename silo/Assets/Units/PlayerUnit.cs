@@ -10,6 +10,8 @@ public class PlayerUnit : BaseUnit
     private CircleCollider2D _playerCollider;
     private SpriteRenderer _playerSpriteRenderer;
     
+    public GameObject BasicBullet;
+    
     private InputAction _moveAction;
     private InputAction _dashAction;
     private InputAction _attackAction;
@@ -17,8 +19,17 @@ public class PlayerUnit : BaseUnit
     private Vector2 _moveDirection;
     private Vector2 _velocity;
     private Vector2 _attackDirection;
+
+    private Vector3 _bulletOffset;
+    private Vector3 _bulletSpawnPosition;
+
+    private float _playerRadius;
+    
+    private Quaternion _attackQuaternion;
     
     private bool _dashOnCooldown = false;
+    private bool _attackOnCooldown = false;
+    private bool _isAttacking = false;
 
     public PlayerUnit(UnitType unitType, Stats stats) : base(unitType, stats)
     {
@@ -28,11 +39,13 @@ public class PlayerUnit : BaseUnit
     private void OnEnable()
     {
         SetUnitType(UnitType.Player);
-        SetStats(100, 5f, 0, 75, 70, 15, 3f);
+        SetStats(100, 5f, 0, 75, 70, 15, 3f, .25f);
         
         _playerInput = GetComponent<PlayerInput>();
         _playerCollider = GetComponent<CircleCollider2D>();
         _playerSpriteRenderer = GetComponent<SpriteRenderer>();
+
+        BasicBullet = Resources.Load<GameObject>("Bullets/BulletPrefabs/BasicBullet");
         
         _moveAction = _playerInput.actions["Move"];
         _dashAction = _playerInput.actions["Dash"];
@@ -42,7 +55,11 @@ public class PlayerUnit : BaseUnit
         _moveAction.performed += ctx => OnMoveInput(ctx);
         _moveAction.canceled += ctx => ZeroInput(ctx);
         _dashAction.performed += ctx => Dash(ctx);
-        _attackAction.performed += ctx => Attack(ctx);
+        _attackAction.performed += ctx => OnAttackInput(ctx);
+        _attackAction.canceled += ctx => StopAttack(ctx);
+        
+        _playerRadius = _playerCollider.radius;
+        _bulletOffset = new Vector3(_playerRadius +.5f, _playerRadius +.5f, 0f);
     }
 
     // Start is called before the first frame update
@@ -61,6 +78,10 @@ public class PlayerUnit : BaseUnit
     {
         Move();
         HandleCollision();
+        if (_isAttacking && !_attackOnCooldown)
+        {
+            Attack();
+        }
     }
 
     public override void Move()
@@ -73,7 +94,7 @@ public class PlayerUnit : BaseUnit
         {
             _velocity = Vector2.MoveTowards(_velocity, Stats.Speed * _moveDirection, Stats.WalkDeceleration * Time.deltaTime);
         }
-        
+
         transform.Translate(_velocity * Time.deltaTime);
     }
 
@@ -98,9 +119,29 @@ public class PlayerUnit : BaseUnit
         }
     }
     
-    private void Attack(InputAction.CallbackContext context)
+    private void OnAttackInput(InputAction.CallbackContext context)
+    { 
+        _attackDirection = context.ReadValue<Vector2>();
+        _isAttacking = true;
+    }
+
+    private void Attack()
     {
-           _attackDirection = context.ReadValue<Vector2>();
+        float angle = Mathf.Atan2(_attackDirection.y, _attackDirection.x) * Mathf.Rad2Deg;
+        _attackQuaternion = Quaternion.AngleAxis(angle, Vector3.forward);
+        
+        _bulletOffset = _bulletOffset * _attackDirection;
+        _bulletSpawnPosition = transform.position + _bulletOffset;
+        
+        Instantiate(BasicBullet, _bulletSpawnPosition, _attackQuaternion);
+        _attackOnCooldown = true;
+        StartCoroutine(AttackCooldown());
+        _bulletOffset = new Vector3(_playerRadius +.5f, _playerRadius +.5f, 0f);
+    }
+    
+    private void StopAttack(InputAction.CallbackContext context)
+    {
+        _isAttacking = false;
     }
     
     private IEnumerator DashCooldown()
@@ -112,6 +153,12 @@ public class PlayerUnit : BaseUnit
         _playerSpriteRenderer.color = Color.white;
     }
     
+    private IEnumerator AttackCooldown()
+    {
+        yield return new WaitForSeconds(Stats.AttackCooldown);
+        _attackOnCooldown = false;
+    }
+
     private void HandleCollision()
     {
         Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, _playerCollider.radius);

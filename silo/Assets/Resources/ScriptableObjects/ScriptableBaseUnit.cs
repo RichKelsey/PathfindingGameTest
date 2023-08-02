@@ -20,6 +20,7 @@ public struct Stats
     public int WalkDeceleration;
     public int DashPower;
     public float DashCooldown;
+    public float AttackCooldown;
 
 }
 
