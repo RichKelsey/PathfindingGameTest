@@ -7,14 +7,16 @@ using UnityEngine.InputSystem;
 public class PlayerUnit : BaseUnit
 {
     private PlayerInput _playerInput;
-    
     private CircleCollider2D _playerCollider;
+    private SpriteRenderer _playerSpriteRenderer;
     
     private InputAction _moveAction;
     private InputAction _dashAction;
+    private InputAction _attackAction;
 
     private Vector2 _moveDirection;
     private Vector2 _velocity;
+    private Vector2 _attackDirection;
     
     private bool _dashOnCooldown = false;
 
@@ -27,16 +29,20 @@ public class PlayerUnit : BaseUnit
     {
         SetUnitType(UnitType.Player);
         SetStats(100, 5f, 0, 75, 70, 15, 3f);
+        
         _playerInput = GetComponent<PlayerInput>();
         _playerCollider = GetComponent<CircleCollider2D>();
-
+        _playerSpriteRenderer = GetComponent<SpriteRenderer>();
+        
         _moveAction = _playerInput.actions["Move"];
         _dashAction = _playerInput.actions["Dash"];
+        _attackAction = _playerInput.actions["Attack"];
         //_playerInput.enabled = true;
 
         _moveAction.performed += ctx => OnMoveInput(ctx);
         _moveAction.canceled += ctx => ZeroInput(ctx);
         _dashAction.performed += ctx => Dash(ctx);
+        _attackAction.performed += ctx => Attack(ctx);
     }
 
     // Start is called before the first frame update
@@ -86,15 +92,24 @@ public class PlayerUnit : BaseUnit
         
         if (!_dashOnCooldown)
         {
+            _dashOnCooldown = true;
             StartCoroutine(DashCooldown());
             _velocity += _moveDirection * Stats.DashPower;
         }
+    }
+    
+    private void Attack(InputAction.CallbackContext context)
+    {
+           _attackDirection = context.ReadValue<Vector2>();
     }
     
     private IEnumerator DashCooldown()
     {
         yield return new WaitForSeconds(Stats.DashCooldown);
         _dashOnCooldown = false;
+        _playerSpriteRenderer.color = Color.green;
+        yield return new WaitForSeconds(.2f);
+        _playerSpriteRenderer.color = Color.white;
     }
     
     private void HandleCollision()
@@ -112,4 +127,5 @@ public class PlayerUnit : BaseUnit
             }
         }
     }
+
 }
