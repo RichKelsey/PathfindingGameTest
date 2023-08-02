@@ -16,6 +16,10 @@ public struct Stats
     public int Health;
     public float Speed;
     public int AttackModifier;
+    public int WalkAcceleration;
+    public int WalkDeceleration;
+    public int DashPower;
+    public float DashCooldown;
 
 }
 

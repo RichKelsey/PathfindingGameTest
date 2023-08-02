@@ -12,6 +12,9 @@ public class PlayerUnit : BaseUnit
     private InputAction _dashAction;
 
     private Vector2 _moveDirection;
+    private Vector2 _velocity;
+    
+    private bool _dashOnCooldown = false;
 
     public PlayerUnit(UnitType unitType, Stats stats) : base(unitType, stats)
     {
@@ -21,23 +24,22 @@ public class PlayerUnit : BaseUnit
     private void OnEnable()
     {
         SetUnitType(UnitType.Player);
-        Stats.Health = 100;
-        Stats.Speed = 5f;
+        SetStats(100, 5f, 0, 75, 70, 15, 3f);
         _playerInput = GetComponent<PlayerInput>();
 
         _moveAction = _playerInput.actions["Move"];
         _dashAction = _playerInput.actions["Dash"];
         //_playerInput.enabled = true;
 
-        _moveAction.performed += ctx => GetMoveInput(ctx);
-        _moveAction.canceled += ctx => ClearInput(ctx);
+        _moveAction.performed += ctx => OnMoveInput(ctx);
+        _moveAction.canceled += ctx => ZeroInput(ctx);
         _dashAction.performed += ctx => Dash(ctx);
     }
 
     // Start is called before the first frame update
     void Start()
     {
-        
+
     }
 
     private void Update()
@@ -53,22 +55,44 @@ public class PlayerUnit : BaseUnit
 
     public override void Move()
     {
-        Stats.Speed = 10f;
-        transform.Translate(new Vector3(_moveDirection.x, _moveDirection.y, 0) * (Stats.Speed * Time.deltaTime));
+        if (_moveDirection != Vector2.zero)
+        {
+            _velocity = Vector2.MoveTowards(_velocity, Stats.Speed * _moveDirection, Stats.WalkAcceleration * Time.deltaTime);
+        }
+        else
+        {
+            _velocity = Vector2.MoveTowards(_velocity, Stats.Speed * _moveDirection, Stats.WalkDeceleration * Time.deltaTime);
+        }
+        
+        transform.Translate(_velocity * Time.deltaTime);
     }
 
-    private void GetMoveInput(InputAction.CallbackContext context)
+    private void OnMoveInput(InputAction.CallbackContext context)
     {
         _moveDirection = context.ReadValue<Vector2>();
     }
     
-    private void ClearInput(InputAction.CallbackContext context)
+    private void ZeroInput(InputAction.CallbackContext context)
     {
         _moveDirection = Vector2.zero;
     }
     
-    public void Dash(InputAction.CallbackContext context)
+    private void Dash(InputAction.CallbackContext context)
     {
-        Debug.Log("Dash");
+        
+        if (!_dashOnCooldown)
+        {
+            StartCoroutine(DashCooldown());
+            _velocity += _moveDirection * Stats.DashPower;
+        }
+    }
+    
+    private IEnumerator DashCooldown()
+    {
+        _dashOnCooldown = true;
+        Debug.Log("Dash on cooldown");
+        yield return new WaitForSeconds(Stats.DashCooldown);
+        _dashOnCooldown = false;
+        Debug.Log("Dash off cooldown");
     }
 }
