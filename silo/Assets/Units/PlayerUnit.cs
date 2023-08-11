@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.Serialization;
 
 public class PlayerUnit : BaseUnit
 {
@@ -10,7 +11,7 @@ public class PlayerUnit : BaseUnit
     private CircleCollider2D _playerCollider;
     private SpriteRenderer _playerSpriteRenderer;
     
-    public GameObject BasicBullet;
+    public GameObject basicBullet;
     
     private InputAction _moveAction;
     private InputAction _dashAction;
@@ -45,7 +46,7 @@ public class PlayerUnit : BaseUnit
         _playerCollider = GetComponent<CircleCollider2D>();
         _playerSpriteRenderer = GetComponent<SpriteRenderer>();
 
-        BasicBullet = Resources.Load<GameObject>("Bullets/BulletPrefabs/BasicBullet");
+        basicBullet = Resources.Load<GameObject>("Bullets/BulletPrefabs/BasicBullet");
         
         _moveAction = _playerInput.actions["Move"];
         _dashAction = _playerInput.actions["Dash"];
@@ -133,7 +134,7 @@ public class PlayerUnit : BaseUnit
         _bulletOffset = _bulletOffset * _attackDirection;
         _bulletSpawnPosition = transform.position + _bulletOffset;
         
-        Instantiate(BasicBullet, _bulletSpawnPosition, _attackQuaternion);
+        Instantiate(basicBullet, _bulletSpawnPosition, _attackQuaternion);
         _attackOnCooldown = true;
         StartCoroutine(AttackCooldown());
         _bulletOffset = new Vector3(_playerRadius +.5f, _playerRadius +.5f, 0f);
