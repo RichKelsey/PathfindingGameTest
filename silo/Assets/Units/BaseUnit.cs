@@ -25,11 +25,9 @@ public abstract class BaseUnit : MonoBehaviour
         Stats.DashCooldown = dashCooldown;
         Stats.AttackCooldown = attackCooldown;
     }
-    
-    public void TakeDamage(int damage)
-    {
-        Stats.Health -= damage;
-    }
+
+    public abstract void TakeDamage(int damage);
+
 
     public abstract void Move();
 

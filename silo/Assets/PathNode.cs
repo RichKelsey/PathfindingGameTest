@@ -6,14 +6,14 @@ using UnityEngine;
 public class PathNode : Heap<PathNode>.IHeapItem
 {
     public bool IsWalkable;
-    public Vector3 WorldPosition;
+    public Vector2 WorldPosition;
     public int hCost;
     public int gCost;
     public Vector2Int GridPosition;
     public PathNode Parent;
     int heapIndex;
     
-    public PathNode(bool isWalkable, Vector3 worldPosition, Vector2Int gridPosition)
+    public PathNode(bool isWalkable, Vector2 worldPosition, Vector2Int gridPosition)
     {
         IsWalkable = isWalkable;
         WorldPosition = worldPosition;

@@ -35,6 +35,12 @@ public class BaseBullet : MonoBehaviour
             {
                 Destroy(gameObject);
             }
+
+            if (hit.CompareTag("Enemy"))
+            {
+                hit.gameObject.GetComponent<Unit>().TakeDamage(25);
+                Destroy(gameObject);
+            }
         }
     }
 }

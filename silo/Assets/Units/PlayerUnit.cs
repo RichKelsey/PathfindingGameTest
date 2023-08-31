@@ -31,6 +31,7 @@ public class PlayerUnit : BaseUnit
     private bool _dashOnCooldown = false;
     private bool _attackOnCooldown = false;
     private bool _isAttacking = false;
+    private bool _isInvulnerable = false;
 
     public PlayerUnit(UnitType unitType, Stats stats) : base(unitType, stats)
     {
@@ -40,7 +41,7 @@ public class PlayerUnit : BaseUnit
     private void OnEnable()
     {
         SetUnitType(UnitType.Player);
-        SetStats(100, 5f, 0, 75, 70, 15, 3f, .25f);
+        SetStats(100, 5f, 0, 75, 70, 15, 3f, .75f);
         
         _playerInput = GetComponent<PlayerInput>();
         _playerCollider = GetComponent<CircleCollider2D>();
@@ -71,18 +72,19 @@ public class PlayerUnit : BaseUnit
 
     private void Update()
     {
-        
+        Move();
+        if (_isAttacking && !_attackOnCooldown)
+        {
+            Attack();
+        }
     }
 
     // Update is called once per frame
     void FixedUpdate()
     {
-        Move();
+        
         HandleCollision();
-        if (_isAttacking && !_attackOnCooldown)
-        {
-            Attack();
-        }
+        
     }
 
     public override void Move()
@@ -159,6 +161,27 @@ public class PlayerUnit : BaseUnit
         yield return new WaitForSeconds(Stats.AttackCooldown);
         _attackOnCooldown = false;
     }
+    
+    private IEnumerator Invulnerability(float duration)
+    {
+        _isInvulnerable = true;
+        yield return new WaitForSeconds(duration);
+        _isInvulnerable = false;
+    }
+    
+    public override void TakeDamage(int damage)
+    {
+        if (!_isInvulnerable)
+        {
+            Stats.Health -= damage;
+            StartCoroutine(ColorFlash(Color.red, .1f));
+            if (Stats.Health <= 0)
+            {
+                Destroy(gameObject);
+            }
+            StartCoroutine(Invulnerability(.5f));
+        }
+    }
 
     private void HandleCollision()
     {
@@ -173,7 +196,18 @@ public class PlayerUnit : BaseUnit
             {
                 transform.Translate(colliderDistance.pointA - colliderDistance.pointB);
             }
+            
+            if (hit.CompareTag("Enemy"))
+            {
+                TakeDamage(50);
+            }
         }
     }
 
+    private IEnumerator ColorFlash(Color color, float duration)
+    {
+        _playerSpriteRenderer.color = color;
+        yield return new WaitForSeconds(duration);
+        _playerSpriteRenderer.color = Color.white;
+    }
 }
