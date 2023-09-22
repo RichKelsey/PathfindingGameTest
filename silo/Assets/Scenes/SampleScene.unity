@@ -440,9 +440,9 @@ Camera:
   m_NormalizedViewPortRect:
     serializedVersion: 2
     x: 0
-    y: 0.20722434
-    width: 1
-    height: 0.5838878
+    y: 0
+    width: 1.0007731
+    height: 0.9978596
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 34
@@ -7294,7 +7294,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2eb841fc19857bf4b86689fbf70e9f15, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  spawnpointTile: {fileID: 11400000, guid: 9bb0cceaae81fa948b2a6900093690fe, type: 2}
   obstacleMap: {fileID: 585638025}
+  numOfSpawnpoints: 2
 --- !u!4 &1567027268
 Transform:
   m_ObjectHideFlags: 0
